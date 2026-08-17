@@ -275,7 +275,8 @@ MOBILE_CSS = """
     }
 
     /* ===== Bottom Navigation ===== */
-    .bottom-nav {
+    /* Style the nav buttons as a fixed bottom bar */
+    [data-testid="stHorizontalBlock"]:has(button) {
         position: fixed;
         bottom: 0;
         left: 50%;
@@ -286,35 +287,61 @@ MOBILE_CSS = """
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border-top: 1px solid #2a2e3a;
-        display: flex;
-        justify-content: space-around;
-        padding: 0.5rem 0 0.8rem 0;
+        padding: 0.5rem 0.5rem 0.8rem 0.5rem;
         z-index: 1000;
+        margin: 0;
+        gap: 0.3rem;
     }
-    .nav-item {
+    /* Style nav buttons */
+    [data-testid="stHorizontalBlock"]:has(button) .stButton > button {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        color: #8a8f9c;
+        font-size: 0.65rem;
+        font-weight: 600;
+        padding: 0.4rem 0.2rem;
+        border-radius: 12px;
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
         gap: 0.15rem;
-        padding: 0.3rem 0.8rem;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        background: none;
-        border: none;
-        color: #8a8f9c;
-        font-family: inherit;
+        line-height: 1.3;
+        white-space: pre-line;
+        min-height: 50px;
     }
-    .nav-item.active {
+    [data-testid="stHorizontalBlock"]:has(button) .stButton > button:hover {
+        background: rgba(79, 172, 254, 0.1);
+        color: #4facfe;
+        transform: none;
+        box-shadow: none;
+    }
+    [data-testid="stHorizontalBlock"]:has(button) .stButton > button:active {
+        transform: scale(0.95);
+    }
+    /* Active nav button (primary type) */
+    [data-testid="stHorizontalBlock"]:has(button) .stButton > button[kind="primary"] {
+        background: rgba(79, 172, 254, 0.15);
+        color: #4facfe;
+        box-shadow: none;
+    }
+    [data-testid="stHorizontalBlock"]:has(button) .stButton > button[kind="primary"]:hover {
+        background: rgba(79, 172, 254, 0.2);
         color: #4facfe;
     }
-    .nav-icon {
-        font-size: 1.3rem;
-        line-height: 1;
+    /* Hide the emoji-only line break */
+    [data-testid="stHorizontalBlock"]:has(button) .stButton p {
+        margin: 0;
+        text-align: center;
     }
-    .nav-label {
-        font-size: 0.6rem;
-        font-weight: 600;
+    /* Ensure the nav buttons container is at the bottom */
+    [data-testid="stHorizontalBlock"]:has(button) {
+        margin-top: 1rem;
+    }
+    /* Add bottom padding to content so nav doesn't overlap */
+    .block-container {
+        padding-bottom: 5.5rem;
     }
 
     /* ===== Buttons ===== */
@@ -1180,7 +1207,7 @@ def render_settings_view(plan):
 
 
 def render_bottom_nav():
-    """Render the bottom navigation bar."""
+    """Render the bottom navigation bar using Streamlit buttons."""
     tabs = [
         ("Today", "📅"),
         ("Plan", "📋"),
@@ -1189,25 +1216,18 @@ def render_bottom_nav():
         ("Settings", "⚙️"),
     ]
 
-    nav_html = '<div class="bottom-nav">'
-    for tab_name, icon in tabs:
-        is_active = st.session_state.current_tab == tab_name
-        active_class = " active" if is_active else ""
-        nav_html += f"""
-            <button class="nav-item{active_class}" onclick="alert('{tab_name}')">
-                <span class="nav-icon">{icon}</span>
-                <span class="nav-label">{tab_name}</span>
-            </button>
-        """
-    nav_html += "</div>"
-
-    st.markdown(nav_html, unsafe_allow_html=True)
-
-    # Hidden buttons for navigation
+    # Use Streamlit buttons styled as bottom nav
     cols = st.columns(len(tabs))
-    for i, (tab_name, _) in enumerate(tabs):
+    for i, (tab_name, icon) in enumerate(tabs):
         with cols[i]:
-            if st.button(tab_name, key=f"nav_{tab_name}", use_container_width=True):
+            is_active = st.session_state.current_tab == tab_name
+            label = f"{icon}\n\n{tab_name}"
+            if st.button(
+                label,
+                key=f"nav_{tab_name}",
+                use_container_width=True,
+                type="primary" if is_active else "secondary",
+            ):
                 st.session_state.current_tab = tab_name
                 st.rerun()
 
