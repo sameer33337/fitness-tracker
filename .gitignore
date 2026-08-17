@@ -75,3 +75,6 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
+
+# ChromaDB local database
+chroma_db/

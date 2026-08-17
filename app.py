@@ -8,6 +8,7 @@ import json
 import os
 from datetime import datetime, date, timedelta
 import streamlit as st
+from db import get_db, WorkoutDatabase
 
 # ============================================================
 # CONFIGURATION
@@ -656,6 +657,25 @@ def init_state():
         st.session_state.cardio_done = False
     if "weight_entries" not in st.session_state:
         st.session_state.weight_entries = {}
+    if "db_initialized" not in st.session_state:
+        st.session_state.db_initialized = False
+    if "sync_status" not in st.session_state:
+        st.session_state.sync_status = "Not synced"
+    if "recommendations" not in st.session_state:
+        st.session_state.recommendations = None
+
+    # Load data from ChromaDB on first run
+    if not st.session_state.db_initialized:
+        try:
+            db = get_db()
+            saved_logs = db.load_all_workout_logs()
+            if saved_logs:
+                st.session_state.workout_logs = saved_logs
+                st.session_state.sync_status = f"Loaded {len(saved_logs)} saved workout(s)"
+            st.session_state.db_initialized = True
+        except Exception as e:
+            st.session_state.sync_status = f"DB unavailable: {str(e)[:50]}"
+            st.session_state.db_initialized = True
 
 
 def get_today_key():
@@ -679,6 +699,20 @@ def save_workout_log(week_idx, day, exercises, cardio_done):
         "cardio_done": cardio_done,
         "completed_at": datetime.now().isoformat(),
     }
+
+    # Save to ChromaDB for persistence
+    try:
+        db = get_db()
+        db.save_workout_log(
+            week_idx=week_idx,
+            day=day,
+            exercises=list(exercises),
+            cardio_done=cardio_done,
+            weight_entries=st.session_state.weight_entries,
+        )
+        st.session_state.sync_status = f"Synced: {day} saved to database"
+    except Exception as e:
+        st.session_state.sync_status = f"Sync failed: {str(e)[:50]}"
 
 
 def get_workout_log(week_idx, day):
@@ -1040,6 +1074,121 @@ def render_history_view(plan):
         )
 
 
+def render_coach_view(plan):
+    """Render the Coach view - AI-powered workout recommendations."""
+    st.markdown('<div class="section-title">AI Coach</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="section-sub">Personalized next month recommendations based on your logged data</div>',
+        unsafe_allow_html=True,
+    )
+
+    # Generate or load recommendations
+    if st.session_state.recommendations is None:
+        try:
+            db = get_db()
+            st.session_state.recommendations = db.generate_recommendations(
+                st.session_state.workout_logs,
+                plan
+            )
+        except Exception as e:
+            st.error(f"Could not generate recommendations: {str(e)[:80]}")
+            return
+
+    rec = st.session_state.recommendations
+
+    # Summary card
+    completed = rec.get("completed_workouts", 0)
+    if completed == 0:
+        st.markdown(
+            """
+            <div class="empty-state">
+                <div class="empty-icon">🤖</div>
+                <div class="empty-text">Start logging workouts to get<br>personalized AI recommendations!</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        return
+
+    # Stats
+    st.markdown(
+        f"""
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">{rec.get('completed_workouts', 0)}</div>
+                <div class="stat-label">Workouts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{rec.get('total_exercises', 0)}</div>
+                <div class="stat-label">Exercises</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{rec.get('cardio_count', 0)}</div>
+                <div class="stat-label">Cardio</div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # Insights
+    insights = rec.get("insights", [])
+    if insights:
+        st.markdown('<div class="section-sub">📊 Your Patterns</div>', unsafe_allow_html=True)
+        for insight in insights:
+            st.markdown(
+                f"""
+                <div class="history-card">
+                    <div class="history-date">💡 {insight}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+    # Recommendations
+    recommendations = rec.get("recommendations", [])
+    if recommendations:
+        st.markdown('<div class="section-sub">🤖 AI Recommendations</div>', unsafe_allow_html=True)
+        for i, rec_text in enumerate(recommendations, 1):
+            st.markdown(
+                f"""
+                <div class="pr-card">
+                    <div class="pr-exercise">📌 {i}. {rec_text}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+    # Next month plan
+    next_plan = rec.get("next_month_plan", "")
+    if next_plan:
+        st.markdown('<div class="section-sub">🗓️ Next Month Plan</div>', unsafe_allow_html=True)
+        st.markdown(
+            f"""
+            <div class="cardio-banner">
+                <div class="cardio-icon">📋</div>
+                <div>
+                    <div class="cardio-text">{next_plan}</div>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    # Refresh button
+    st.markdown("<br>", unsafe_allow_html=True)
+    if st.button("🔄 Refresh Recommendations", use_container_width=True):
+        try:
+            db = get_db()
+            st.session_state.recommendations = db.generate_recommendations(
+                st.session_state.workout_logs,
+                plan
+            )
+            st.rerun()
+        except Exception as e:
+            st.error(f"Could not refresh: {str(e)[:80]}")
+
+
 def render_progress_view(plan):
     """Render the Progress view - charts and PRs."""
     st.markdown('<div class="section-title">Progress</div>', unsafe_allow_html=True)
@@ -1156,6 +1305,34 @@ def render_settings_view(plan):
         unsafe_allow_html=True,
     )
 
+    # Cloud sync status
+    st.markdown('<div class="section-sub">Cloud Sync</div>', unsafe_allow_html=True)
+    st.markdown(
+        f"""
+        <div class="settings-row">
+            <div class="settings-label">☁️ Sync Status</div>
+            <div class="settings-value">{st.session_state.sync_status}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    if st.button("🔄 Sync Now", use_container_width=True):
+        try:
+            db = get_db()
+            for key, log in st.session_state.workout_logs.items():
+                db.save_workout_log(
+                    week_idx=log.get("week", 0),
+                    day=log.get("day", ""),
+                    exercises=log.get("exercises", []),
+                    cardio_done=log.get("cardio_done", False),
+                    weight_entries=log.get("weight_entries", {}),
+                )
+            st.session_state.sync_status = f"Synced {len(st.session_state.workout_logs)} workout(s) to cloud"
+            st.success("Cloud sync complete! ✅")
+        except Exception as e:
+            st.session_state.sync_status = f"Sync failed: {str(e)[:50]}"
+            st.error(f"Sync failed. Will retry when online: {str(e)[:80]}")
+
     # Data management
     st.markdown('<div class="section-sub">Data Management</div>', unsafe_allow_html=True)
 
@@ -1211,8 +1388,8 @@ def render_bottom_nav():
     tabs = [
         ("Today", "📅"),
         ("Plan", "📋"),
-        ("History", "📊"),
         ("Progress", "📈"),
+        ("Coach", "🤖"),
         ("Settings", "⚙️"),
     ]
 
@@ -1250,10 +1427,10 @@ def main():
         render_today_view(plan)
     elif st.session_state.current_tab == "Plan":
         render_plan_view(plan)
-    elif st.session_state.current_tab == "History":
-        render_history_view(plan)
     elif st.session_state.current_tab == "Progress":
         render_progress_view(plan)
+    elif st.session_state.current_tab == "Coach":
+        render_coach_view(plan)
     elif st.session_state.current_tab == "Settings":
         render_settings_view(plan)
 
