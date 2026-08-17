@@ -25,6 +25,7 @@
 - **FitTrack (Project Structure)**: Project folder created with prd.md, memory.md, and rules.md.
 - **FitTrack (Data Source Analyzed)**: 4-week workout plan data received in JSON format and documented in PRD.
 - **FitTrack (Tech Stack Decided)**: Web-first approach selected (React/Angular + Streamlit), iOS native hooks ready.
+- **FitTrack (GitHub Pushed)**: The app has been pushed to GitHub as a private repo (`sameer33337/fitness-tracker`).
 
 ## Pending Tasks
 
@@ -45,7 +46,7 @@
    - Progress tracking
 
 3. **Deploy to Streamlit (PENDING)**:
-   - Push code to GitHub
+   - Code is already on GitHub (`sameer33337/fitness-tracker`)
    - Connect to Streamlit Community Cloud
    - Share the public URL
 

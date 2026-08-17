@@ -6,6 +6,7 @@
 - [x] Set up project structure (prd.md, memory.md, rules.md)
 - [x] Analyze workout data source (JSON provided by user)
 - [x] Decide tech stack: Web-first (React/Angular + Streamlit), iOS native later
+- [x] Push project to GitHub (private repo: `sameer33337/fitness-tracker`)
 - [ ] Set up web app (React/Angular + FastAPI + Streamlit)
 - [ ] Implement data models
 - [ ] Implement workout plan display
@@ -21,6 +22,7 @@
 - **PRD Document**: `Project/fitness-tracker/prd.md`
 - **Memory File**: `Project/fitness-tracker/memory.md`
 - **Rules File**: `Project/fitness-tracker/rules.md`
+- **GitHub Repo**: `https://github.com/sameer33337/fitness-tracker` (private)
 - **Source Image**: `C:\Users\91903\Downloads\sameer workout.jpeg`
 - **Source PDF**: `C:\Users\91903\Downloads\sameer workout.pdf`
 
@@ -113,6 +115,13 @@ The workout plan is a 4-week progressive program:
 | **Data Persistence** | Browser localStorage + JSON | Offline-first, simple |
 | **Charts** | Chart.js / Recharts | Data visualization |
 | **Architecture** | Component-based + API layer | Clean separation, iOS-ready |
+
+### GitHub
+
+- **Repository**: `sameer33337/fitness-tracker` (private)
+- **Branch**: `main`
+- **Pushed**: 2026-08-17
+- **Status**: Code is on GitHub, ready for development
 
 ### Next Steps
 
