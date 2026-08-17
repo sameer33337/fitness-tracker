@@ -23,7 +23,7 @@
 - **PRD Document**: `Project/fitness-tracker/prd.md`
 - **Memory File**: `Project/fitness-tracker/memory.md`
 - **Rules File**: `Project/fitness-tracker/rules.md`
-- **GitHub Repo**: `https://github.com/sameer33337/fitness-tracker` (private)
+- **GitHub Repo**: `https://github.com/sameer33337/fitness-tracker` (public)
 - **Source Image**: `C:\Users\91903\Downloads\sameer workout.jpeg`
 - **Source PDF**: `C:\Users\91903\Downloads\sameer workout.pdf`
 

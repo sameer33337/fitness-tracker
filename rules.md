@@ -25,7 +25,7 @@
 - **FitTrack (Project Structure)**: Project folder created with prd.md, memory.md, and rules.md.
 - **FitTrack (Data Source Analyzed)**: 4-week workout plan data received in JSON format and documented in PRD.
 - **FitTrack (Tech Stack Decided)**: Web-first approach selected (React/Angular + Streamlit), iOS native hooks ready.
-- **FitTrack (GitHub Pushed)**: The app has been pushed to GitHub as a private repo (`sameer33337/fitness-tracker`).
+- **FitTrack (GitHub Pushed)**: The app has been pushed to GitHub as a public repo (`sameer33337/fitness-tracker`).
 - **FitTrack (Web App Implemented)**: Mobile-first Streamlit app with workout plan display, exercise logging, history, progress tracking, and settings.
 - **FitTrack (Tests Passing)**: All test suite tests pass (workout plan structure, exercise parsing, all exercises across weeks).
 
