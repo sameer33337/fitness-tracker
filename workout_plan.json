@@ -1,0 +1,57 @@
+{
+  "title": "My Workout Plan",
+  "weeks": [
+    {
+      "week": "Week 1",
+      "cardio": "10 Min Cardio",
+      "schedule": {
+        "Monday": ["25 Pullups", "50 Pushups", "20/3 Bicep Curl", "15/4 Bench Press", "10/4 Shoulder Press"],
+        "Tuesday": ["25 Squats", "20 Pullups", "15/4 Latpulls", "15/4 Bicep Curl", "15/4 Shoulder Press"],
+        "Wednesday": ["50 Pushups", "25 Squats", "15/4 Incline Press", "10/4 Chest Flyes", "10/3 Weighted Squats"],
+        "Thursday": ["20 Pullups", "50 Pushups", "15/4 Bicep Curl", "10/4 Shoulder Press", "15/4 Bench Press"],
+        "Friday": ["100 Pushups (Close Grip Pushup)", "40 Squats", "10/3 W Squat", "5/5 Lunges", "10/3 Skull Crusher", "10/3 Tricep"],
+        "Saturday": ["20 Pullups", "30 Pushups", "15/4 Incline Press", "15/3 Incline Fly", "20/3 Bicep Curl"],
+        "Sunday": ["Rest / Badminton"]
+      }
+    },
+    {
+      "week": "Week 2",
+      "cardio": "10 Min Cardio",
+      "schedule": {
+        "Monday": ["20 Pullups", "55 Pushups"],
+        "Tuesday": ["40 Squats", "20 Pullups"],
+        "Wednesday": ["55 Pushups", "40 Squats"],
+        "Thursday": ["20 Pullups", "55 Pushups"],
+        "Friday": ["20 Pushups", "60 Squats"],
+        "Saturday": ["20 Pullups", "30 Pushups"],
+        "Sunday": ["Rest / Badminton"]
+      }
+    },
+    {
+      "week": "Week 3",
+      "cardio": "15 Min Cardio",
+      "schedule": {
+        "Monday": ["+1 Rep to all Week 2 exercises"],
+        "Tuesday": ["+1 Rep to all Week 2 exercises"],
+        "Wednesday": ["+1 Rep to all Week 2 exercises"],
+        "Thursday": ["+1 Rep to all Week 2 exercises"],
+        "Friday": ["+1 Rep to all Week 2 exercises"],
+        "Saturday": ["+1 Rep to all Week 2 exercises"],
+        "Sunday": ["+1 Pullups & Squats", "+1 Rep"]
+      }
+    },
+    {
+      "week": "Week 4",
+      "cardio": "15 Min Cardio",
+      "schedule": {
+        "Monday": ["+5 Reps and +1 Set to all Week 3 exercises"],
+        "Tuesday": ["+5 Reps and +1 Set to all Week 3 exercises"],
+        "Wednesday": ["+5 Reps and +1 Set to all Week 3 exercises"],
+        "Thursday": ["+5 Reps and +1 Set to all Week 3 exercises"],
+        "Friday": ["+5 Reps and +1 Set to all Week 3 exercises"],
+        "Saturday": ["+5 Reps and +1 Set to all Week 3 exercises"],
+        "Sunday": ["+1 Pullups & Squats", "+1 Set"]
+      }
+    }
+  ]
+}
