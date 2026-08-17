@@ -78,3 +78,7 @@ MANIFEST
 
 # ChromaDB local database
 chroma_db/
+
+# Agent/Claude skill symlinks
+.agents/
+.claude/
